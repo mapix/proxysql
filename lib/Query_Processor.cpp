@@ -1426,10 +1426,13 @@ __internal_loop:
 			}
 		}
 		if (qr->schemaname && strlen(qr->schemaname)) {
-			if (strcmp(qr->schemaname,sess->client_myds->myconn->userinfo->schemaname)!=0) {
+			if (strcmp(qr->schemaname,sess->client_myds->myconn->userinfo->schemaname) ==0) {
+			} else if (qr->schemaname[strlen(qr->schemaname) - 1] == '*'
+                    && strncmp(qr->schemaname,sess->client_myds->myconn->userinfo->schemaname, strlen(qr->schemaname) - 1) == 0) {
+            } else {
 				proxy_debug(PROXY_DEBUG_MYSQL_QUERY_PROCESSOR, 5, "query rule %d has no matching schemaname\n", qr->rule_id);
 				continue;
-			}
+            }
 		}
 
 		// match on client address
